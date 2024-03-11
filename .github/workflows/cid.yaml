@@ -1,0 +1,43 @@
+name: CD/CD
+run-name: Continuous Integration & Delivery
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - feat/*
+      - fix/*
+      - refactor/*
+
+jobs:
+  integration:
+    name: Continuous Integration
+    strategy:
+      matrix:
+        target: ['lint', 'build', 'unit', 'e2e']
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+      - run: npx nx run-many -t ${{ matrix.target }}
+
+  delivery:
+    name: Continuous Delivery
+    needs: [integration]
+    if: ${{ github.event_name=='pull_request' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')}}
+    runs-on: [self-hosted]
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+      - shell: bash
+        run: echo "name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: branch
+      - run: npx nx run-many -t deploy -c  ${{ steps.branch.outputs.name == 'dev' && 'staging' ||  'production' }}
+      - run: npx nx run-many -t e2e -c  ${{ steps.branch.outputs.name == 'dev' && 'staging' ||  'production' }}
