@@ -40,7 +40,7 @@ export const appGeneratorCommandAction = async (appName, options) => {
   }
 
   if (type == 'microservice') {
-    appName = `server/services/${appName}-service`;
+    appName = `servers/services/${appName}-service`;
     const args = [
       `--projectNameAndRootFormat=as-provided`,
       `${dryRun ? '--dry-run' : ''}`,
@@ -53,7 +53,7 @@ export const appGeneratorCommandAction = async (appName, options) => {
       console.error(`${chalk.red(`Can't create project via nx!`)}\nYou Can try to run command for manual start nx daemon\n\t: npx nx show projects --json`);
     }
   } else if (type == 'gateway') {
-    appName = `server/gateways/${appName}-gateways`;
+    appName = `servers/gateways/${appName}-gateway`;
     const args = [
       `--projectNameAndRootFormat=as-provided`,
       `${dryRun ? '--dry-run' : ''}`,
