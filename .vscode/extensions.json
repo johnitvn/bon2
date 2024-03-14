@@ -2,6 +2,7 @@
   "recommendations": [
     "esbenp.prettier-vscode",
     "firsttris.vscode-jest-runner",
-    "hediet.vscode-drawio"
+    "hediet.vscode-drawio",
+    "ms-playwright.playwright"
   ]
 }
