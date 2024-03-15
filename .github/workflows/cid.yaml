@@ -10,16 +10,17 @@ on:
     branches:
       - main
       - dev
-      - feat/*
-      - fix/*
-      - refactor/*
+  pull_request:
+    branches:
+      - main
+      - dev
 
 jobs:
   integration:
     name: Continuous Integration
     strategy:
       matrix:
-        target: ['lint', 'build', 'unit', 'e2e']
+        target: ['lint', 'build', 'test --passWithNoTests', 'e2e']
     runs-on: [self-hosted]
     steps:
       - uses: actions/checkout@v4

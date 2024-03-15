@@ -3,6 +3,9 @@
     "esbenp.prettier-vscode",
     "firsttris.vscode-jest-runner",
     "hediet.vscode-drawio",
-    "ms-playwright.playwright"
+    "ms-playwright.playwright",
+    "jeppeandersen.vscode-kafka",
+    "cweijan.vscode-database-client2",
+    "bradlc.vscode-tailwindcss"
   ]
 }

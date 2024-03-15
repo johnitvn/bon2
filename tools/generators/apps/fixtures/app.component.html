@@ -1,0 +1,14 @@
+<tui-root>
+  <div class="text-xl p-6 bg-gray-100 [&ul]:flex [&ul]:space-x-4">
+    <ul class="remote-menu">
+      <li><a routerLink="/">Home</a></li>
+    </ul>
+  </div>
+  <router-outlet></router-outlet>
+
+  <ng-container ngProjectAs="tuiOverContent"> </ng-container>
+  <ng-container ngProjectAs="tuiOverDialogs"> </ng-container>
+  <ng-container ngProjectAs="tuiOverAlerts"> </ng-container>
+  <ng-container ngProjectAs="tuiOverPortals"> </ng-container>
+  <ng-container ngProjectAs="tuiOverHints"> </ng-container>
+</tui-root>`

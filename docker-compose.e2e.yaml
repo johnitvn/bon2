@@ -1,0 +1,14 @@
+version: '3'
+
+networks:
+  default:
+    name: bonbon
+    external: true
+
+services:
+  accounts-site:
+    image: accounts-site:local
+    ports:
+      - '4200:4200'
+    environment:
+      - PORT=4200

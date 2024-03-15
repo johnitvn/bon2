@@ -1,0 +1,92 @@
+version: '3'
+
+volumes:
+  kafka_data:
+    driver: local
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  default:
+    name: bonbon
+    driver: bridge
+
+services:
+
+  kafka:
+    container_name: kafka
+    image: bitnami/kafka
+    ports:
+      - '9094:9094'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      # KRaft settings
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+
+
+  postgres:
+    container_name: postgres
+    image: gradescope/postgresql-multiple-databases
+    restart: "no"
+    ports:
+      - "5432:5432"
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="identities"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: "no"
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      - MINIO_ROOT_USER=miniouser
+      - MINIO_ROOT_PASSWORD=miniouser
+    command: server --console-address ":9001" /data
+
+  minio-mc:
+    image: minio/mc
+    container_name: minio-mc
+    depends_on:
+    - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host rm local;
+      /usr/bin/mc config host add --quiet --api s3v4 local http://minio:9000 miniouser miniouser;
+      /usr/bin/mc mb -p local/bonbon;
+      /usr/bin/mc policy set public local/bonbon;
+      mc admin user svcacct add                       \
+      --access-key "minio-access-key"          \
+      --secret-key "minio-secret-key"  \
+      local miniouser
+      "
+
