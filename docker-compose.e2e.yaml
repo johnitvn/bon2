@@ -6,9 +6,27 @@ networks:
     external: true
 
 services:
+
   accounts-site:
+    container_name: accounts-site
     image: accounts-site:local
+    restart: always
+    depends_on:
+      accounts-authenticate-module:
+        condition: service_healthy
     ports:
       - '4200:4200'
     environment:
       - PORT=4200
+
+  accounts-authenticate-module:
+    container_name: accounts-authenticate-module
+    image: accounts-authenticate-module:local
+    restart: always
+
+
+  accounts-myaccount-module:
+    container_name: accounts-myaccount-module
+    image: accounts-myaccount-module:local
+    restart: always
+

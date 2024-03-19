@@ -1,0 +1,14 @@
+FROM alpine:3.16
+
+# install the node with the smallest capacity possible
+RUN apk add --no-cache libstdc++
+COPY --from=node:lts-alpine /usr/local/include/node /usr/local/include/node
+COPY --from=node:lts-alpine /usr/local/bin/node /usr/local/bin/node
+
+# install application 
+COPY ./dist/{fullpath} /usr/app/dist/{fullpath}
+
+# run application
+WORKDIR /usr/app
+ENTRYPOINT [ "/usr/local/bin/node" ]
+CMD ["dist/{fullpath}/server/main.js"]

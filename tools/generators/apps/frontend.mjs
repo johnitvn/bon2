@@ -56,7 +56,7 @@ export const frontendApp = async (appName, dryRun) => {
   tsConfigJsonConfig(appFullPath);
   changeAppConfig(appFullPath, appName);
   addBonbonWelcomeComponent(appFullPath, appName);
-  addDockerFile(appFullPath);
+  addDockerFile(appFullPath, 'module');
 
   await execRun(`npx prettier -w ${appFullPath}/**/*.{json,ts,js,scss}`);
 

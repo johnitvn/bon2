@@ -30,7 +30,7 @@ jobs:
   delivery:
     name: Continuous Delivery
     needs: [integration]
-    if: ${{ github.event_name=='pull_request' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')}}
+    if: ${{ github.event_name=='push'}}
     runs-on: [self-hosted]
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}

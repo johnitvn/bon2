@@ -60,6 +60,6 @@ export const forntendHostApp = async (appName, dryRun) => {
   tsConfigJsonConfig(appFullPath);
   changeAppConfig(appFullPath, appName);
   addBonbonWelcomeComponent(appFullPath, appName);
-  addDockerFile(appFullPath);
+  addDockerFile(appFullPath, 'site');
   await execRun(`npx prettier -w ${appFullPath}/**/*.{json,ts,js,scss,css,less}`);
 }
